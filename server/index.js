@@ -1,9 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
 
+const UserModel = require("./models/Users");
+
 const app = express();
 
-const UserModel = require("./models/Users");
+app.use(express.json());
 
 mongoose.connect(process.env.KEY);
 
@@ -16,6 +18,14 @@ app.get("/getUsers", (req, res) => {
     }
   })
 });
+
+app.post("/createUser", async (req, res) => {
+  const user = req.body;
+  const newUser = new UserModel(user);
+  await newUser.save();
+
+  res.json(user);
+})
 
 app.listen((process.env.PORT || 3001), () => {
   console.log("Server running");
